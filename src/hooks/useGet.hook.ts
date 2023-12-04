@@ -14,7 +14,8 @@ interface DataType {
     author: string,
     status: string,
     chap_number: string,
-    image: string
+    image: string,
+    ebook: string
 }
 
 type DataTypeArray = DataType[]

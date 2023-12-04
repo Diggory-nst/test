@@ -12,7 +12,7 @@ const WaitingVerification = () => {
         }}>
             <div className="waiting-verification">
                 <h2>Vui lòng xác thực email để hoàn tất đăng ký tài khoản.</h2>
-                <p>Bạn vui lòng kiểm tra phần thư rác (spam) để kích hoạt email.</p>
+                <p>Bạn vui lòng kiểm tra phần thư rác (spam) nếu không thấy để kích hoạt email.</p>
             </div>
         </Section>
     )

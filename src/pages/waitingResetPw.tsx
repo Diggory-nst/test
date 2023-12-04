@@ -12,7 +12,7 @@ const WaitingResetPw = () => {
         }}>
             <div className="waiting-verification">
                 <h2>Vui lòng click vào đường link trong email để hoàn tất tiếp tục lấy lại mật khẩu.</h2>
-                <p>Bạn vui lòng kiểm tra phần thư rác (spam) để kích hoạt email.</p>
+                <p>Bạn vui lòng kiểm tra phần thư rác (spam) nếu không thấy để kích hoạt email.</p>
             </div>
         </Section>
     )

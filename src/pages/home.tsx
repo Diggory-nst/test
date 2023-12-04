@@ -2,153 +2,105 @@
 import '../assets/styles/base.css'
 import '../assets/styles/grid_system.css'
 
-import { Div, Search, Story } from '../assets/styles/home.css'
-import { Header, Footer } from '../components'
+import { Div, Story } from '../assets/styles/home.css'
+import Header from '../components/home/header'
+import Footer from '../components/home/footer'
 
 import { Link } from 'react-router-dom'
 import IonIcon from '@reacticons/ionicons'
+import { useEffect, useState } from 'react'
 
-import useGet from '../hooks/useGet.hook'
-import { useEffect, useRef, useState, useTransition } from 'react'
-import { useNavigate, createSearchParams } from 'react-router-dom'
-
-import preloader from '../utils/preloader'
 import axios from 'axios'
+import configDomain from '../configs/config.domain'
 
-import configDomain from '../config/config.domain'
-
-type EbooksSearch = [
-    {
-        _id: string,
-        name: string,
-        slug: string
-    }
-]
+interface Ebook {
+    _id: string,
+    name: string,
+    slug: string,
+    author: string,
+    status: string,
+    chap_number: string,
+    image: string,
+}
 
 const Home = () => {
 
     const domain = configDomain?.domain
 
-    const [search, setSearch] = useState<string>('')
-    const [ebooksSearch, setEbooksSearch] = useState<EbooksSearch | null>(null)
-    const [isPopup, setIsPopup] = useState<boolean>(false)
+    const [isError, setIsError] = useState<boolean>(false)
+    const [messageError, setMessageError] = useState<string>('')
 
-    const [url, setUrl] = useState<string>(`${domain}`)
-    const [query, setQuery] = useState<string>('moinhat')
+    const [ebooks, setEbooks] = useState<Ebook[]>([])
+    const [filterEbook, setFilterEbook] = useState<string>('moinhat')
 
-    const canvas_ref = useRef<HTMLCanvasElement | null>(null)
-    const grid_ref = useRef<HTMLDivElement | null>(null)
+    const getEbooks = async (status: string) => {
 
-    const { data, isLoading, isError } = useGet(url, {})
+        setFilterEbook(status)
 
-    const navigate = useNavigate()
+        const url = `${domain}`
 
-    const handelQuery = (param_query: string) => {
-        navigate({
-            pathname: '/',
-            search: `?${createSearchParams({
-                orderby: param_query
-            })}`
-        })
-        setQuery(param_query)
-        setUrl(`${domain}/?orderby=${param_query}`)
+        try {
+            const res = await axios.get(url, { params: { status } })
+            const ebooks = res.data.metadata.ebooks
+
+            if (ebooks.length === 0) {
+                setIsError(true)
+                setMessageError('Không Có Ebook Nào')
+                return
+            }
+
+            setIsError(false)
+            setEbooks(ebooks)
+        } catch (error: any) {
+            setIsError(true)
+            setMessageError(error.response.data.message)
+        }
     }
 
     useEffect(() => {
-        const url = `${domain}/ebook/search`
-        const data = {
-            name_ebook: search
-        }
-
-        if (search == '') {
-            setIsPopup(false)
-            return
-        }
-
-        const fetchData = setTimeout(async () => {
-            const res = await axios.post(url, data)
-            const recieve_data = res.data
-
-            const ebooks = recieve_data.metadata.ebooks
-            ebooks.length > 0 ? setEbooksSearch(ebooks) : setEbooksSearch(null)
-            setIsPopup(true)
-        }, 500)
-
-        return () => clearTimeout(fetchData)
-    }, [search])
-
-    preloader(canvas_ref, grid_ref)
+        getEbooks('moinhat')
+    }, [])
 
     return (
-        <Div className='home_page'>
+        <Div className='home-page'>
             <Header />
+            <div className='space'></div>
             <div className="container">
-                <div ref={grid_ref} className="grid wide">
-                    <Search className="section_search">
-                        <div className="search">
-                            <input type="text" placeholder='Tìm kiếm' onChange={e => setSearch(e.target.value)} />
-                            <IonIcon name="search-outline"></IonIcon>
-                        </div>
-                        <div className="show_list_search">
-                            {isPopup && ebooksSearch &&
-                                ebooksSearch.map(ebook => {
-                                    return (
-                                        <Link to={`/ebook/${ebook.slug}`} key={ebook._id}>{ebook.name}</Link>
-                                    )
-                                })
-                            }
-                            {isPopup && !ebooksSearch &&
-                                <h1>Không có kết quả nào</h1>
-                            }
-                        </div>
-                    </Search>
-                    <Story className="section_story">
-                        <div className="sum_story">
-                            <div className='number_of_story'>
+                <div className="grid wide">
+                    <Story className="section-story">
+                        <div className="sum-story">
+                            <div className='number-of-story'>
                                 <IonIcon name="dice-outline"></IonIcon>
-                                <h1>{data.length} Truyện</h1>
+                                <h1>{ebooks.length} Truyện ( Tất cả Ebook đều là Dịch thuần Việt )</h1>
                             </div>
-                            <div className='sort_by'>
-                                <h1 className={query === 'moinhat' ? 'active' : 'no-active'} onClick={() => handelQuery('moinhat')}>Mới Nhất</h1>
-                                <h1 className={query === 'hoanthanh' ? 'active' : 'no-active'} onClick={() => handelQuery('hoanthanh')}>Hoàn Thành</h1>
-                                <h1 className={query === 'dangra' ? 'active' : 'no-active'} onClick={() => handelQuery('dangra')}>Đang Ra</h1>
+                            <div className='sort-by'>
+                                <h1 className={filterEbook === 'moinhat' ? 'active' : 'no-active'} onClick={() => getEbooks('moinhat')}>Mới Nhất</h1>
+                                <h1 className={filterEbook === 'hoanthanh' ? 'active' : 'no-active'} onClick={() => getEbooks('hoanthanh')}>Hoàn Thành</h1>
+                                <h1 className={filterEbook === 'dangra' ? 'active' : 'no-active'} onClick={() => getEbooks('dangra')}>Đang Ra</h1>
                             </div>
                         </div>
-                        <div className="list_story">
-                            {data && data.length > 0 ?
-                                <div className="row">
-                                    {!isLoading && data && data.length > 0 &&
-                                        data.map(item => {
-                                            return (
-                                                <div className="col l-4" key={item._id}>
-                                                    <Link to={`/ebook/${item.slug}`} className="item_story">
-                                                        <div className="image">
-                                                            <img src={`${domain}/images/` + item.image} />
-                                                        </div>
-                                                        <div className="information">
-                                                            <h1 className="name">{item.name}</h1>
-                                                            <h1 className='number_of_chap'>Số chương: {item.chap_number} Chương</h1>
-                                                            <h1 className="author">Tác giả: {item.author}</h1>
-                                                            <h1 className="status">Trạng thái: {item.status}</h1>
-                                                        </div>
-                                                    </Link>
+                        <div className="list-story">
+                            {isError === false ?
+                                <div className='have-ebook'>
+                                    {ebooks.map(ebook => {
+                                        return (
+                                            <Link to={`/ebook/${ebook.slug}`} className="item-story" key={ebook._id}>
+                                                <div className="image">
+                                                    <img src={`${domain}/images/` + ebook.image} />
                                                 </div>
-                                            )
-                                        })
-                                    }
+                                                <div className="information">
+                                                    <h1 className="name">{ebook.name}</h1>
+                                                    <h1 className="author">{ebook.author}</h1>
+                                                    <h1 className="status">{ebook.status}</h1>
+                                                </div>
+                                            </Link>
+                                        )
+                                    })}
                                 </div>
                                 :
-                                <p style={{ height: '174px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <h1 style={{ fontSize: '2.6rem' }}>Không Có Ebook Nào</h1>
-                                </p>
-                            }
-                            {isLoading === true &&
-                                <canvas ref={canvas_ref} id="canvas" width="1200" height="200"></canvas>
-                            }
-                            {isError === true &&
-                                <p style={{ height: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <h1>Something Wrong...</h1>
-                                </p>
+                                <div className='non-ebook'>
+                                    <h1>{messageError}</h1>
+                                </div>
                             }
                         </div>
                     </Story>

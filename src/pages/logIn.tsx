@@ -6,7 +6,7 @@ import { Section } from "../assets/styles/signIn.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import configDomain from "../config/config.domain";
+import configDomain from "../configs/config.domain";
 
 interface DataType {
     tokens: {
@@ -39,6 +39,9 @@ const LogIn = () => {
         })
     }
 
+    // Post data
+    // Get data and tokens
+    // Set Tokens in LocalStorage
     const handleSubmit = async (event: any) => {
 
         event.preventDefault()
@@ -65,7 +68,10 @@ const LogIn = () => {
     }
 
     return (
-        <Section style={{ background: `url(${background})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover' }}>
+        <Section style={{
+            background: `url(${background})`, backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center', backgroundSize: 'cover'
+        }}>
             <div className="form-box" style={{ height: '450px' }}>
                 <div className="form-value">
                     <form>
@@ -88,7 +94,7 @@ const LogIn = () => {
                         }
                         <button onClick={handleSubmit}>Đăng Nhập</button>
                         <div className="register">
-                            <p>Không có tài khoản: <a href="../signIn-secret">Đăng Ký</a></p>
+                            <p>Không có tài khoản: <Link to="../signIn-secret">Đăng Ký</Link></p>
                         </div>
                     </form>
                 </div>

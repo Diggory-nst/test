@@ -2,16 +2,23 @@ import styled from "styled-components";
 
 const Section = styled.section`
 
-    img {
-        display: flex;
-        margin: 0 auto;
+    .background {
+        height: 400px;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-top: 40px;
     }
 
     h1 {
         font-size: 8rem;
-        position: absolute; 
-        top: 108px;
-        right: 46%;
+        line-height: 8.4rem;
+        text-align: center;
+    }
+
+    .control {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     p {
@@ -19,15 +26,11 @@ const Section = styled.section`
         text-align: center;
         width: 790px;
         line-height: 4.8rem;
-        position: absolute;
-        top: 60%;
-        right: 22%;
+        margin-bottom: 24px;
     }
 
     a {
         font-size: 2rem;
-        position: absolute;
-        right: 42%;
         padding: 18px;
         background-color: #39ac31;
         color: white;

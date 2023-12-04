@@ -1,69 +1,76 @@
 
-import icon_dowload from '../assets/images/icons/down-to-line.svg'
-import background from '../assets/images/background.jpg'
 
 import { Div, Container } from '../assets/styles/ebook.css';
-
-import { Header, Footer } from "../components";
-import useGet from '../hooks/useGet.hook';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useRef } from 'react';
 
 import preloader from '../utils/preloader';
-import configDomain from '../config/config.domain';
+import configDomain from '../configs/config.domain';
+
+import kiemLai from '../assets/images/kiem-lai.jpg'
+import test from '../assets/images/background/phong_canh.jpg'
 
 const Ebook = () => {
 
     const domain = configDomain?.domain
 
+    // Get slug param
     const param = useParams()
     const slug = param.slug
 
-    const { data: ebook, isLoading, isError, messageError } = useGet(`${domain}/ebook/${slug}`, {})
-
-    const canvas_ref = useRef<HTMLCanvasElement | null>(null)
-    const grid_ref = useRef<HTMLDivElement | null>(null)
-
-    preloader(canvas_ref, grid_ref)
+    // Get data for page
+    // const { data: ebook, isLoading, isError, messageError } = useGet(`${domain}/ebook/${slug}`, {})
 
     return (
-        <Div className="ebook_page">
-            <Header />
-            <Container className="container" style={{ backgroundImage: `url(${background})` }}>
-                <div ref={grid_ref} className="grid wide" style={{ display: 'flex' }}>
-                    {!isLoading && ebook && ebook.length > 0 &&
-                        <>
-                            <div className="section_image">
-                                <img src={`${domain}/images/` + ebook[0].image} />
-                            </div>
-                            <div className="section_information">
-                                <div className="information">
-                                    <h1 className="name">{ebook[0].name}</h1>
-                                    <h1 className='number_of_chap'>Số chương: {ebook[0].chap_number} Chương</h1>
-                                    <h1 className="author">Tác giả: {ebook[0].author}</h1>
-                                    <h1 className="status">Trạng thái: {ebook[0].status}</h1>
+        <Div className="ebook-page" style={{ backgroundImage: `url(${test})`, backgroundSize: 'cover' }}>
+            <header>
+                <Link to='/'>
+                    <div className="cover-photo"></div>
+                </Link>
+                <div className="grid wide">
+                    <div className="border-line"></div>
+                    <div className="detail-story-header">
+                        <img src={kiemLai} />
+                        <div className="detail-story__info">
+                            <h1 className='name-ebook'>Tiên Tử, Xin Nghe Ta Giải Thích</h1>
+                            <div className="detail-story__info-1">
+                                <div className="information-ebook">
+                                    <span className="author-ebook">Phong Hỏa Hí Chư Hầu Phong Hỏa</span>
+                                    <span className="status-ebook">Hoàn Thành</span>
+                                    <h2 className="number-chapter-ebook">1790 <b>Chương</b></h2>
+                                    <button className='btn-forward'>Đọc Truyện Tại Đây</button>
                                 </div>
-                                <div className="dowload_ebook">
-                                    <div>
-                                        <img src={icon_dowload} />
-                                        <h2>Tải Ebook</h2>
+                                <div className="install-ebook">
+                                    <h1>Tải Ebook</h1>
+                                    <div className="part-ebook">
+                                        <a className='list-chapter' href='/' >Danh sách chương</a>
+                                        <ul>
+                                            <li>
+                                                <a href="/">Phần 1</a>
+                                            </li>
+                                            <li>
+                                                <a href="/">Phần 2</a>
+                                            </li>
+                                            <li>
+                                                <a href="/">Phần 3</a>
+                                            </li>
+                                            <li>
+                                                <a href="/">Phần 4</a>
+                                            </li>
+                                            <li>
+                                                <a href="/">Phần 5</a>
+                                            </li>
+                                            <li>
+                                                <a href="/">Phần 6</a>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <a href="/">Hướng Dẫn Chung ( Quan Trọng )</a>
                                 </div>
                             </div>
-                        </>
-                    }
-                    {isLoading === true &&
-                        <canvas ref={canvas_ref} id="canvas" width="1200" height="320"></canvas>
-                    }
-                    {isError === true &&
-                        <p style={{ width: '100%', height: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <h1>{messageError}</h1>
-                        </p>
-                    }
+                        </div>
+                    </div>
                 </div>
-            </Container>
-            <Footer />
+            </header>
         </Div>
     )
 }

@@ -1,9 +1,9 @@
 import { ComponentType } from "react";
 
 import {
-    Home, Ebook, Guidance, Admin, SignIn, LogIn,
+    Home, Ebook, Admin, SignIn, LogIn,
     ForgotPassword, ResetPassword, Page404,
-    WaitingVerification, WaitingResetPw
+    WaitingVerification, WaitingResetPw, Activate
 } from "../pages";
 
 interface Route {
@@ -19,10 +19,6 @@ const publicRoutes: Route[] = [
     {
         path: '/ebook/:slug',
         component: Ebook
-    },
-    {
-        path: '/guidance',
-        component: Guidance
     },
     {
         path: '/admin-secret',
@@ -55,6 +51,10 @@ const publicRoutes: Route[] = [
     {
         path: '/waiting-reset-password',
         component: WaitingResetPw
+    },
+    {
+        path: '/activate-account/:username_encode',
+        component: Activate
     }
 ]
 

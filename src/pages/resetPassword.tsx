@@ -6,7 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-import configDomain from "../config/config.domain";
+import configDomain from "../configs/config.domain";
 
 const ResetPassword = () => {
 

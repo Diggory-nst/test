@@ -5,9 +5,9 @@ import { Section } from "../assets/styles/signIn.css";
 import { useState } from "react";
 import validate from "../utils/validate";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import configDomain from "../config/config.domain";
+import configDomain from "../configs/config.domain";
 
 interface User {
     email: string,
@@ -38,6 +38,8 @@ const SignIn = () => {
         })
     }
 
+    // Validate and Post Data
+    // Authentication via Email
     const handleSubmit = async (e: any) => {
 
         e.preventDefault()
@@ -70,7 +72,7 @@ const SignIn = () => {
         }
 
         axios.post(url, data)
-            .then(res => navigate('waiting-verification'))
+            .then(_res => navigate('waiting-verification'))
             .catch(error => {
                 setIsError(true)
                 setErrorValidate(error.response.data.message)
@@ -78,7 +80,10 @@ const SignIn = () => {
     }
 
     return (
-        <Section style={{ background: `url(${background})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover' }}>
+        <Section style={{
+            background: `url(${background})`, backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center', backgroundSize: 'cover'
+        }}>
             <div className="form-box">
                 <div className="form-value">
                     <form>
@@ -108,7 +113,7 @@ const SignIn = () => {
                         }
                         <button type="submit" onClick={handleSubmit}>Đăng Ký</button>
                         <div className="register">
-                            <p>Có tài khoản: <a href="../login-secret">Đăng Nhập</a></p>
+                            <p>Có tài khoản: <Link to="../login-secret">Đăng Nhập</Link></p>
                         </div>
                     </form>
                 </div>
